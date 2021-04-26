@@ -1,2 +1,3 @@
 # test_python
-test con python
+
+in questa repository metto progetti ed esercizi di prova che scrivo in python
