@@ -9,6 +9,7 @@ import matplotlib.image as mpimg #libreria per mostrare immagini e grafici
 import matplotlib.pyplot as plt #per visualizzare
 from numpy.fft import fft2, fftshift, ifft2, ifftshift #ifft2 trasformata di fourier inversa
 import numpy as np #pachetto di calcolo numerico
+import random as rnd
 
 numero_stampe = 0 #numero di plot attivi
 
@@ -38,7 +39,6 @@ def stampa_immagine(im):
     
     plt.figure(numero_stampe)
     plt.imshow(im, cmap = 'gray')
-    plt.colorbar()
     numero_stampe += 1
 
 
@@ -103,10 +103,21 @@ def gaussiano_inverso(x,y):
     sigma = 0.02
     return -np.exp(-(x**2+y**2)/sigma**2) + 1
 
-# def random_phase(x,y):
+def random_phase(im):
     
-#     n,m = x.shape
-#     return np.random.random([n,m])*1j
+    im = im.astype(float)
+    ft_im = fft2(im)
+    k = 2*np.pi #fattore di sfasamento (da 0 a 2pi)
+    
+    rand_matrix = [[k*rnd.random() for x in range(len(im))] for y in range(len(im[0]))] 
+    
+    rand_matrix = np.asarray(rand_matrix) #converte la lista in un array numpy
+    
+    prodotto = ft_im[:,:]*np.exp(1j*rand_matrix[:,:])
+
+    return np.abs(ifft2(prodotto))
+    
+    
 
 def cosin(x,y):
     
@@ -126,26 +137,28 @@ def ricava_filtro(im, im_filt):
     
 
 
-maschere = [mask_1, mask_2, mask_3, mask_4, mask_5, mask_6, mask_7, mask_8, 
-            mask_9, mask_10]
-funzioni = [gaussiano, gaussiano_inverso, cosin]
+# maschere = [mask_1, mask_2, mask_3, mask_4, mask_5, mask_6, mask_7, mask_8, 
+#             mask_9, mask_10]
+# funzioni = [gaussiano, gaussiano_inverso, cosin]
 
-filtri = [filt_1, filt_2, filt_3, filt_4]
-
-
-for mask in maschere:
-    stampa_immagine(applica_maschera(im_base, mask))
-
-for funz in funzioni:
-    stampa_immagine(applica_funzione(im_base, funz))
-
-for filt in filtri:
-    stampa_immagine(filt)
-    out = ricava_filtro(im_base, filt)
-    stampa_immagine(applica_maschera(im_base, out))
-    
-    
+# filtri = [filt_1, filt_2, filt_3, filt_4]
 
 
+# for mask in maschere:
+#     stampa_immagine(applica_maschera(im_base, mask))
+
+# for funz in funzioni:
+#     stampa_immagine(applica_funzione(im_base, funz))
+
+# for filt in filtri:
+#     stampa_immagine(filt)
+#     out = ricava_filtro(im_base, filt)
+#     stampa_immagine(applica_maschera(im_base, out))
+
+
+
+# random_phase(im_base)
+
+stampa_immagine(random_phase(im_base))
             
 
